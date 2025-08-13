@@ -1,45 +1,66 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Button } from 'react-native-paper';
-import { Icon, MD3Colors } from 'react-native-paper';
-import { useEffect, useState } from 'react';
-import { Conexao, createTable, inserirUsuario, selectUsuario, selectUsuarioId, dropTable , deleteUsuario, updateUsuario} from './Conf/Banco';
+import { useEffect } from 'react';
+import {
+  Conexao,
+  createTable,
+  inserirUsuario,
+  selectUsuario,
+  selectUsuarioId,
+  dropTable,
+  deleteUsuario,
+  updateUsuario
+} from './Conf/Banco';
+import * as SQLite from 'expo-sqlite';
+
 export default function App() {
+  useEffect(() => {
+    async function Main() {
+      const db = await Conexao();
 
-  // ---- HOOK
-  useEffect(()=>{
-     async function Main(){
-        let db =  await Conexao();
-       // await createTable(db);
-       // await dropTable(db, 'USUARIO');
-      // inserirUsuario(db,"Ricardo","@Giovanna");
+      if (!db) {
+        console.error("Erro: Conexão com o banco não estabelecida.");
+        return;
+      }
 
-       const registro = await selectUsuario(db);
+      // Exemplo de uso
+      // await createTable(db);
+      // await dropTable(db, 'USUARIO');
+      // await inserirUsuario(db, "Ricardo", "@Giovanna");
 
-        for( const linhas of registro as {ID_US:number, NOME_US:string, EMAIL_US :string } ){
-             
-              console.log(linhas.ID_US, linhas.NOME_US, linhas.EMAIL_US);
-          }
-    console.log("/------------------------------------------------------")
-        const nome  = await selectUsuarioId(db,5);       
-     console.log(nome.ID_US, nome.NOME_US,nome.EMAIL_US,)
-        
-    console.log("/------------------------------------------------------");
-       // await deleteUsuario(db, 3);
+      // Buscar todos os usuários
+      const registro = await selectUsuario(db);
 
-       console.log("/------------------------------------------------------");
-       // await updateUsuario(db, 5, "ellen", "@ellen.com");
-       
-     }
-      
-     Main();
-  },[])
+      registro?.forEach((linhas: any) => {
+        console.log(linhas.ID_US, linhas.NOME_US, linhas.EMAIL_US);
+      });
 
+      console.log("/------------------------------------------------------");
+
+      // Buscar usuário por ID
+      const nome = await selectUsuarioId(db, 5);
+      if (nome.success && nome.data) {
+        console.log(nome.data.ID_US, nome.data.NOME_US, nome.data.EMAIL_US);
+      }
+
+      console.log("/------------------------------------------------------");
+      // await deleteUsuario(db, 3);
+
+      console.log("/------------------------------------------------------");
+      // await updateUsuario(db, 5, "ellen", "@ellen.com");
+    }
+
+    Main();
+  }, []);
 
   return (
     <View style={styles.container}>
-     
-      <Button icon="account-alert" mode="contained" onPress={() => console.log('Pressed')}>
+      <Button
+        icon="account-alert"
+        mode="contained"
+        onPress={() => console.log('Pressed')}
+      >
         Inserir
       </Button>
       <StatusBar style="auto" />
