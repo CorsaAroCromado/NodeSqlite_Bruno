@@ -1,5 +1,5 @@
 import * as SQLite from "expo-sqlite";
-import type { Carro } from '../types/usuario';
+import type { Carro } from '../types/carro';
 import type { ApiResponse } from '../types/ApiResponse';
 
 //Conexão e criação de tabelas
@@ -37,6 +37,27 @@ async function createTable(db: SQLite.SQLiteDatabase): Promise<ApiResponse<null>
          KM_RODADOS INTEGER
        );`
     );
+
+    const rows: any[] = await db.getAllAsync('SELECT * from CARROS;');
+
+    if (rows.length === 0) {
+      await db.execAsync(`
+        INSERT INTO CARROS (NOME, MARCA, ANO, COR, PRECO, KM_RODADOS) VALUES
+        ('Civic Type R', 'Honda', 2022, 'Vermelho', 220000.00, 12000),
+        ('Supra GR', 'Toyota', 2021, 'Branco', 350000.00, 8000),
+        ('GT-R R35', 'Nissan', 2020, 'Cinza', 600000.00, 15000),
+        ('Impreza WRX STI', 'Subaru', 2019, 'Azul', 280000.00, 30000),
+        ('Lancer Evolution X', 'Mitsubishi', 2018, 'Preto', 250000.00, 45000),
+        ('RX-7 Spirit R', 'Mazda', 2002, 'Amarelo', 700000.00, 55000),
+        ('NSX', 'Honda', 2017, 'Prata', 750000.00, 22000),
+        ('370Z Nismo', 'Nissan', 2019, 'Branco', 260000.00, 28000),
+        ('LC 500', 'Lexus', 2021, 'Preto', 520000.00, 10000),
+        ('86 GT', 'Toyota', 2020, 'Laranja', 190000.00, 25000);
+      `);
+    }
+
+
+
     console.log('Tabela CARROS criada com sucesso!');
     return { success: true, data: null, message: 'Tabela CARROS criada com sucesso.' };
   } catch (erro) {
@@ -51,7 +72,7 @@ async function inserirCarro(db: SQLite.SQLiteDatabase, carro: Carro): Promise<Ap
 
     try {
           const response = await db.runAsync(
-            " INSERT INTO CARRO ( NOME, MARCA, ANO, COR, PRECO, KM_RODADOS  ) VALUES(?, ?, ?, ?, ?, ?) ", 
+            " INSERT INTO CARROS ( NOME, MARCA, ANO, COR, PRECO, KM_RODADOS  ) VALUES(?, ?, ?, ?, ?, ?) ", 
             carro.NOME,
             carro.MARCA,
             carro.ANO,
@@ -106,7 +127,7 @@ async function selectCarroId(db: SQLite.SQLiteDatabase, id: number): Promise<Api
     };
   }
 }
-async function deleteUsuario(db:SQLite.SQLiteDatabase, id:number): Promise<ApiResponse<null>> {
+async function deleteCarro(db:SQLite.SQLiteDatabase, id:number): Promise<ApiResponse<null>> {
   try {
       await db.runAsync('DELETE FROM CARROS WHERE ID_CARRO = ?', id);
       console.log(`Carro com ID ${id} excluído com sucesso.`);
@@ -118,7 +139,7 @@ async function deleteUsuario(db:SQLite.SQLiteDatabase, id:number): Promise<ApiRe
 }
 async function updateUsuario(db:SQLite.SQLiteDatabase, id:number, carro: Carro): Promise<ApiResponse<null>> {
   try {
-      await db.runAsync('UPDATE CARRO SET NOME = ?, MARCA = ?, ANO = ?, COR = ?, PRECO = ?, KM_RODADOS = ? WHERE ID_CARRO = ?',
+      await db.runAsync('UPDATE CARROS SET NOME = ?, MARCA = ?, ANO = ?, COR = ?, PRECO = ?, KM_RODADOS = ? WHERE ID_CARRO = ?',
           carro.NOME,
           carro.MARCA,
           carro.ANO,
@@ -145,6 +166,6 @@ export {
   selectAllCarros, 
   selectCarroId, 
   dropTable, 
-  deleteUsuario, 
+  deleteCarro, 
   updateUsuario 
 };
