@@ -1,5 +1,10 @@
-export type Usuario = {
-  ID_US: number;
-  NOME_US: string;
-  EMAIL_US: string;
-};
+export type Carro = {
+  ID_CARRO?: number;
+  NOME: string;
+  MARCA: string;
+  ANO: number;
+  COR: string;
+  PRECO: number;
+  KM_RODADOS: number;
+}
+
