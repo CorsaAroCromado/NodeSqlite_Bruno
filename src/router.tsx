@@ -24,7 +24,9 @@ export default function Routes() {
       paddingTop: 6,
       height: 110,
     },
+    
   }}
+   initialRouteName="Home"
 >
   <Tab.Screen
     name="Listar Carros"

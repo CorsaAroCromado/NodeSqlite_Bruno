@@ -102,7 +102,7 @@ async function selectAllCarros(db:SQLite.SQLiteDatabase): Promise<ApiResponse<Ca
 async function selectCarroId(db: SQLite.SQLiteDatabase, id: number): Promise<ApiResponse<Carro | null>> {
   try {
     const result = await db.getFirstAsync( //result can be null
-      "SELECT * FROM CARRO WHERE ID_US = ?",
+      "SELECT * FROM CARROS WHERE ID_CARRO = ?",
       id
     );
 

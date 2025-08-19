@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Text, ScrollView, TextInput, Button, View, StyleSheet, Alert } from "react-native";
-import styles from "../css/styles";
+import { Text, ScrollView, TextInput, View, StyleSheet, Alert } from "react-native";
 import { getdb } from "../../Conf/ConnectionInstance";
 import { inserirCarro } from "../../Conf/Banco";
 import type { Carro } from "../../types/carro";
 import { useNavigation } from "@react-navigation/native";
+import styles from "../css/styles";
+import { Button } from "react-native-paper";
 
 export default function CreateCarro() {
   const [nome, setNome] = useState("");
@@ -17,6 +18,7 @@ export default function CreateCarro() {
   const navigation = useNavigation<any>(); 
 
   const handleSubmit = async () => {
+    console.log("Cadastrando carro:", { nome, marca, ano, cor, preco, kmRodados });
     if (!nome || !marca || !ano || !cor || !preco || !kmRodados) {
       Alert.alert("Erro", "Preencha todos os campos!");
       return;
@@ -52,64 +54,65 @@ export default function CreateCarro() {
     }
   };
 
+  const clearForm = () => {
+    setNome("");
+    setMarca("");
+    setAno("");
+    setCor("");
+    setPreco("");
+    setKmRodados("");
+  }
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={formStyles.label}>Nome</Text>
-      <TextInput style={formStyles.input} value={nome} onChangeText={setNome} placeholder="Ex: Civic Type R" />
+      <View style={styles.divForm}>
+      <Text style={styles.label}>Nome</Text>
+      <TextInput style={styles.input} value={nome} onChangeText={setNome} placeholder="Ex: Civic Type R" />
 
-      <Text style={formStyles.label}>Marca</Text>
-      <TextInput style={formStyles.input} value={marca} onChangeText={setMarca} placeholder="Ex: Honda" />
+      <Text style={styles.label}>Marca</Text>
+      <TextInput style={styles.input} value={marca} onChangeText={setMarca} placeholder="Ex: Honda" />
 
-      <Text style={formStyles.label}>Ano</Text>
+      <Text style={styles.label}>Ano</Text>
       <TextInput
-        style={formStyles.input}
+        style={styles.input}
         value={ano}
         onChangeText={setAno}
         placeholder="Ex: 2022"
         keyboardType="numeric"
       />
 
-      <Text style={formStyles.label}>Cor</Text>
-      <TextInput style={formStyles.input} value={cor} onChangeText={setCor} placeholder="Ex: Vermelho" />
+      <Text style={styles.label}>Cor</Text>
+      <TextInput style={styles.input} value={cor} onChangeText={setCor} placeholder="Ex: Vermelho" />
 
-      <Text style={formStyles.label}>Preço</Text>
+      <Text style={styles.label}>Preço</Text>
       <TextInput
-        style={formStyles.input}
+        style={styles.input}
         value={preco}
         onChangeText={setPreco}
         placeholder="Ex: 220000"
         keyboardType="numeric"
       />
 
-      <Text style={formStyles.label}>KM Rodados</Text>
+      <Text style={styles.label}>KM Rodados</Text>
       <TextInput
-        style={formStyles.input}
+        style={styles.input}
         value={kmRodados}
         onChangeText={setKmRodados}
         placeholder="Ex: 15000"
         keyboardType="numeric"
       />
 
-      <View style={{ marginTop: 20 }}>
-        <Button title="Salvar Carro" color="#000456" onPress={handleSubmit} />
+      <View style={{ marginTop: 20, width: "100%", alignItems: "center", justifyContent: "space-between", flexDirection: "row" }}>
+         <Button style={styles.buttonSubmit} icon="plus" mode="contained" onPress={() => handleSubmit()}>
+          Cadastrar
+          </Button>
+         <Button style={styles.buttonClear} icon="" mode="contained" onPress={() => clearForm()}>
+            Limpar
+          </Button>
+      </View>
       </View>
     </ScrollView>
   );
 }
 
-const formStyles = StyleSheet.create({
-  label: {
-    fontSize: 14,
-    fontWeight: "bold",
-    marginTop: 12,
-    color: "#000456",
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 10,
-    marginTop: 5,
-    backgroundColor: "#fff",
-  },
-});
+

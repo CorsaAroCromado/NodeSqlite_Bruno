@@ -1,6 +1,7 @@
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useState, useCallback } from "react";
 import { ScrollView, View, Text, StyleSheet } from "react-native";
+import { Button } from "react-native-paper";
 import { selectAllCarros } from "../../Conf/Banco";
 import { getdb } from "../../Conf/ConnectionInstance";
 import type { Carro } from "../../types/carro";
@@ -55,11 +56,12 @@ export default function GetCarros() {
           <Text style={cardStyles.info}>Ano: {carro.ANO}</Text>
           <Text style={cardStyles.info}>Cor: {carro.COR}</Text>
           <Text style={cardStyles.info}>
-            Preço: R$ {carro.PRECO.toLocaleString("pt-BR")}
+            Preço: R$ {carro.PRECO}
           </Text>
           <Text style={cardStyles.info}>
-            KM Rodados: {carro.KM_RODADOS.toLocaleString("pt-BR")} km
+            KM Rodados: {carro.KM_RODADOS} km
           </Text>
+          
         </View>
       ))}
     </ScrollView>

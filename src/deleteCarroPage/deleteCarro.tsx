@@ -1,12 +1,13 @@
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useState, useCallback } from "react";
-import { ScrollView, View, Text, StyleSheet, Button } from "react-native";
+import { ScrollView, View, Text, StyleSheet, Alert } from "react-native";
 import { selectAllCarros, deleteCarro } from "../../Conf/Banco";
 import { getdb } from "../../Conf/ConnectionInstance";
 import type { Carro } from "../../types/carro";
 import style from "../css/styles";
 import Spinner from "../utils/spinner";
-import { Alert } from "react-native";
+import { Button } from 'react-native-paper';
+
 
 export default function GetCarros() {
   const [carros, setCarros] = useState<Carro[]>([]);
@@ -37,14 +38,19 @@ export default function GetCarros() {
     try {
       const db = await getdb();
       if (db) {
+        if(id >= 0){
         const response = await deleteCarro(db, id);
         if (response.success) {
+          console.log("deletando");
           Alert.alert("Sucesso", "Carro excluído com sucesso!");
           fetchApiCarros();
         } else {
           Alert.alert("Erro", response.message);
         }
-      }
+      }else{
+      Alert.alert("Id não fornecido um mal formatado")
+    }
+    }
     } catch (error) {
       console.error("Erro ao excluir carro:", error);
       Alert.alert("Erro", "Não foi possível excluir o carro.");
@@ -69,21 +75,27 @@ export default function GetCarros() {
     <ScrollView contentContainerStyle={style.scrollContainer}>
       {carros.map((carro) => (
         <View key={carro.ID_CARRO} style={style.card}>
-        <View>
           <Text style={style.nome}>{carro.NOME}</Text>
-          <Text style={style.nome}>{carro.NOME}</Text>
+        <View style={style.CardDelete}>
+           
+          <View>
           <Text style={style.info}>Marca: {carro.MARCA}</Text>
           <Text style={style.info}>Ano: {carro.ANO}</Text>
-          <Text style={style.info}>Cor: {carro.COR}</Text>
+      
+          </View>
+          <View> 
           <Text style={style.info}>
-            Preço: R$ {carro.PRECO.toLocaleString("pt-BR")}
+            Preço: R$ {carro.PRECO}
           </Text>
           <Text style={style.info}>
-            KM Rodados: {carro.KM_RODADOS.toLocaleString("pt-BR")} km
+            KM Rodados: {carro.KM_RODADOS} km
           </Text>
           </View>
+        </View>
           <View>
-            <Button title="Excluir"></Button>
+            <Button style={style.buttonDelete} icon="delete" mode="contained" onPress={() => deletarCarro(carro.ID_CARRO)}>
+              Excluir
+            </Button>
           </View>
         </View>
       ))}
