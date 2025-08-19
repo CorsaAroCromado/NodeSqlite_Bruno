@@ -1,9 +1,10 @@
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useState, useCallback } from "react";
-import { ScrollView, View, Text, StyleSheet } from "react-native";
+import { ScrollView, View, Text, StyleSheet, Button } from "react-native";
 import { selectAllCarros, deleteCarro } from "../../Conf/Banco";
 import { getdb } from "../../Conf/ConnectionInstance";
 import type { Carro } from "../../types/carro";
+import style from "../css/styles";
 import Spinner from "../utils/spinner";
 import { Alert } from "react-native";
 
@@ -65,49 +66,29 @@ export default function GetCarros() {
   }
 
   return (
-    <ScrollView contentContainerStyle={cardStyles.scrollContainer}>
+    <ScrollView contentContainerStyle={style.scrollContainer}>
       {carros.map((carro) => (
-        <View key={carro.ID_CARRO} style={cardStyles.card}>
-          <Text style={cardStyles.nome}>{carro.NOME}</Text>
-          <Text style={cardStyles.info}>Marca: {carro.MARCA}</Text>
-          <Text style={cardStyles.info}>Ano: {carro.ANO}</Text>
-          <Text style={cardStyles.info}>Cor: {carro.COR}</Text>
-          <Text style={cardStyles.info}>
+        <View key={carro.ID_CARRO} style={style.card}>
+        <View>
+          <Text style={style.nome}>{carro.NOME}</Text>
+          <Text style={style.nome}>{carro.NOME}</Text>
+          <Text style={style.info}>Marca: {carro.MARCA}</Text>
+          <Text style={style.info}>Ano: {carro.ANO}</Text>
+          <Text style={style.info}>Cor: {carro.COR}</Text>
+          <Text style={style.info}>
             Preço: R$ {carro.PRECO.toLocaleString("pt-BR")}
           </Text>
-          <Text style={cardStyles.info}>
+          <Text style={style.info}>
             KM Rodados: {carro.KM_RODADOS.toLocaleString("pt-BR")} km
           </Text>
+          </View>
+          <View>
+            <Button title="Excluir"></Button>
+          </View>
         </View>
       ))}
     </ScrollView>
   );
 }
 
-const cardStyles = StyleSheet.create({
-  scrollContainer: {
-    padding: 10,
-  },
-  card: {
-    width: "100%",
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 15,
-    marginBottom: 12,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 4, // sombra Android
-  },
-  nome: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 6,
-    color: "#000456", // azul da tua paleta
-  },
-  info: {
-    fontSize: 14,
-    color: "#333",
-    marginBottom: 2,
-  },
-});
+
