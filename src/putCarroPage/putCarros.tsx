@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Text, ScrollView, TextInput, View, StyleSheet, Alert } from "react-native";
 import { getdb } from "../../Conf/ConnectionInstance";
 import { updateUsuario, selectCarroId } from "../../Conf/Banco";
@@ -6,6 +6,7 @@ import type { Carro } from "../../types/carro";
 import { useNavigation } from "@react-navigation/native";
 import styles from "../css/styles";
 import { Button } from "react-native-paper";
+import { useRoute } from "@react-navigation/native";
 
 export default function CreateCarro() {
   const [nome, setNome] = useState("");
@@ -18,6 +19,7 @@ export default function CreateCarro() {
   const [carro, setCarro] = useState<Carro>({} as Carro);
 
   const navigation = useNavigation<any>(); 
+  const route = useRoute();
 
     const getCarrosInfo = async (id: number) => {
   try {
@@ -44,7 +46,24 @@ export default function CreateCarro() {
   }
 };
 
-
+ const confirmarEdicao = (id: number) => {
+  Alert.alert(
+    "Confirmar Edição",
+    "Tem certeza que deseja editar este carro?",
+    [
+      {
+        text: "Cancelar",
+        style: "cancel", // botão padrão de cancelar
+      },
+      {
+        text: "confirmar",
+        style: "destructive", // deixa o botão em vermelho no iOS
+        onPress: () => handleSubmit(), // chama a função de exclusão
+      },
+    ],
+    { cancelable: true }
+  );
+};
 
 
   const handleSubmit = async () => {
@@ -57,6 +76,7 @@ export default function CreateCarro() {
       const db = await getdb();
       if (db) {
                 const carro: Carro = {
+                ID_CARRO: 0,
                 NOME: nome,
                 MARCA: marca,
                 ANO: parseInt(ano),
@@ -66,7 +86,7 @@ export default function CreateCarro() {
                 };
             const response = await updateUsuario(db,Number(idPesquisar), carro);
             if(response.success) {
-              Alert.alert("Sucesso", "Carro inserido com sucesso!");
+              Alert.alert("Sucesso", "Carro editado com sucesso!");
                 setIdPesquisar("");
               setNome("");
               setMarca("");
@@ -93,6 +113,14 @@ export default function CreateCarro() {
     setPreco("");
     setKmRodados("");
   }
+
+  useEffect(() => {
+    const { id } = route.params;
+    console.log(id);
+    if (id) {
+      getCarrosInfo(id);
+    }
+  }, []);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -160,7 +188,7 @@ export default function CreateCarro() {
         flexDirection: "row",
       }}
     >
-      <Button style={styles.buttonSubmit} icon="pencil" mode="contained" onPress={handleSubmit}>
+      <Button style={styles.buttonSubmit} icon="pencil" mode="contained" onPress={() => confirmarEdicao(Number(idPesquisar))}>
         Editar
       </Button>
       <Button style={styles.buttonClear} mode="contained" onPress={clearForm}>

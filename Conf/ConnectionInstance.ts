@@ -6,5 +6,6 @@ export async function getdb() {
   if (!dbInstance) {
     dbInstance = await Conexao();
   }
+  console.log(dbInstance);
   return dbInstance;
 }

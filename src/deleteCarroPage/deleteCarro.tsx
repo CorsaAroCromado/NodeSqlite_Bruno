@@ -34,6 +34,25 @@ export default function GetCarros() {
     }
   };
 
+  const confirmarExclusao = (id: number) => {
+  Alert.alert(
+    "Confirmar Exclusão",
+    "Tem certeza que deseja excluir este carro?",
+    [
+      {
+        text: "Cancelar",
+        style: "cancel", // botão padrão de cancelar
+      },
+      {
+        text: "Excluir",
+        style: "destructive", // deixa o botão em vermelho no iOS
+        onPress: () => deletarCarro(id), // chama a função de exclusão
+      },
+    ],
+    { cancelable: true }
+  );
+};
+
   const deletarCarro = async (id: number) => {
     try {
       const db = await getdb();
@@ -93,7 +112,7 @@ export default function GetCarros() {
           </View>
         </View>
           <View>
-            <Button style={style.buttonDelete} icon="delete" mode="contained" onPress={() => deletarCarro(carro.ID_CARRO)}>
+            <Button style={style.buttonDelete} icon="delete" mode="contained" onPress={() => confirmarExclusao(carro.ID_CARRO)}>
               Excluir
             </Button>
           </View>

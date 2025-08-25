@@ -22,8 +22,9 @@ export default function CreateCarro() {
     if (!nome || !marca || !ano || !cor || !preco || !kmRodados) {
       Alert.alert("Erro", "Preencha todos os campos!");
       return;
-    }
+    }else{
     const carro: Carro = {
+      ID_CARRO: 0,
       NOME: nome,
       MARCA: marca,
       ANO: parseInt(ano),
@@ -52,6 +53,7 @@ export default function CreateCarro() {
       console.error("Erro ao inserir carro:", error);
       Alert.alert("Erro", "Não foi possível inserir o carro.");
     }
+  }
   };
 
   const clearForm = () => {

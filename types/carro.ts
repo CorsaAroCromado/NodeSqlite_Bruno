@@ -1,5 +1,5 @@
 export type Carro = {
-  ID_CARRO?: number;
+  ID_CARRO: number;
   NOME: string;
   MARCA: string;
   ANO: number;
