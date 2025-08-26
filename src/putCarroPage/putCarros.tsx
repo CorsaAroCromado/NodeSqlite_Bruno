@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Text, ScrollView, TextInput, View, StyleSheet, Alert } from "react-native";
 import { getdb } from "../../Conf/ConnectionInstance";
 import { updateUsuario, selectCarroId } from "../../Conf/Banco";
 import type { Carro } from "../../types/carro";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import styles from "../css/styles";
 import { Button } from "react-native-paper";
 import { useRoute } from "@react-navigation/native";
@@ -28,7 +28,7 @@ export default function CreateCarro() {
       const response = await selectCarroId(db, id);
       if (response.success && response.data) {
         const carroEncontrado = response.data;
-        setCarro(carroEncontrado); // 👈 atualiza o estado carro
+        setCarro(carroEncontrado); 
         setNome(carroEncontrado.NOME);
         setMarca(carroEncontrado.MARCA);
         setAno(carroEncontrado.ANO.toString());
@@ -36,7 +36,7 @@ export default function CreateCarro() {
         setPreco(carroEncontrado.PRECO.toString());
         setKmRodados(carroEncontrado.KM_RODADOS.toString());
       } else {
-        setCarro({} as Carro); // 👈 limpa para esconder o form
+        setCarro({} as Carro);
         Alert.alert("Atenção", "Nenhum carro encontrado com esse ID.");
       }
     }
@@ -114,13 +114,16 @@ export default function CreateCarro() {
     setKmRodados("");
   }
 
-  useEffect(() => {
-    const { id } = route.params;
-    console.log(id);
-    if (id) {
-      getCarrosInfo(id);
-    }
-  }, []);
+   useFocusEffect(
+      useCallback(() => {
+        const {id} = route.params as {id: number};
+        console.log(id)
+        if(id){
+            getCarrosInfo(id)
+            setIdPesquisar(id.toString());
+        }
+      }, [route.params]) 
+    );
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -132,8 +135,8 @@ export default function CreateCarro() {
             <TextInput
                 style={styles.inputIdPesquisar}
                 value={idPesquisar}
+                keyboardType="numeric"
                 onChangeText={setIdPesquisar}
-                placeholder="Ex: 1"
                 />
             <Button onPress={() => getCarrosInfo(Number(idPesquisar))} style={styles.buttonSearchId} icon="plus" mode="contained">
             Buscar Carro
