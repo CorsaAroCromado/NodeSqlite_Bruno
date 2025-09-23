@@ -46,25 +46,6 @@ export default function CreateCarro() {
   }
 };
 
- const confirmarEdicao = (id: number) => {
-  Alert.alert(
-    "Confirmar Edição",
-    "Tem certeza que deseja editar este carro?",
-    [
-      {
-        text: "Cancelar",
-        style: "cancel", // botão padrão de cancelar
-      },
-      {
-        text: "confirmar",
-        style: "destructive", // deixa o botão em vermelho no iOS
-        onPress: () => handleSubmit(), // chama a função de exclusão
-      },
-    ],
-    { cancelable: true }
-  );
-};
-
 
   const handleSubmit = async () => {
     console.log("Cadastrando carro:", carro);
@@ -114,16 +95,41 @@ export default function CreateCarro() {
     setKmRodados("");
   }
 
-   useFocusEffect(
+      useFocusEffect(
       useCallback(() => {
-        const {id} = route.params as {id: number};
-        console.log(id)
-        if(id){
-            getCarrosInfo(id)
-            setIdPesquisar(id.toString());
+        const idFromRoute = (route.params as { id?: number })?.id;
+        if (idFromRoute) {
+          console.log("ID recebido pela rota:", idFromRoute);
+          getCarrosInfo(idFromRoute);
+          setIdPesquisar(idFromRoute.toString());
+        } else {
+          console.log("Nenhum ID recebido pela rota. Usuário deve digitar manualmente.");
+          clearForm();
         }
-      }, [route.params]) 
+      }, [route.params])
     );
+
+   const confirmarEdicao = (id: number) => {
+     if (!id) {
+       Alert.alert("Erro", "Informe um ID válido para editar o carro.");
+       return;
+     }
+
+     Alert.alert(
+       "Confirmar Edição",
+       "Tem certeza que deseja editar este carro?",
+       [
+         { text: "Cancelar", style: "cancel" },
+         {
+           text: "Confirmar",
+           style: "default",
+           onPress: () => handleSubmit(),
+         },
+       ],
+       { cancelable: true }
+     );
+   };
+
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
